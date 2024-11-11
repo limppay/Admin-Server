@@ -9,6 +9,31 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id            String     @id @default(uuid())        
+  Nome          String
+  email         String
+  senha         String
+  Nascimento    DateTime
+  genero        String                                            
+  cidade        String                                    
+  estado        String                                    
+  Status        Boolean    @default(true)                  
+  createdAt     DateTime   @default(now())                 
+  permissions   Permission[]                               
+
+  @@map("admin_users")                                     
+}
+
+model Permission {
+  id            Int        @id @default(autoincrement())   // ID autoincrementado para a permissão
+  nome          String                                     // Nome da permissão, ex: "CREATE_USER"
+  descricao   String?                                    // Descrição opcional da permissão
+  adminUsers    AdminUser[]                                // Relação com usuários administrativos
+
+  @@map("permissions")                                     // Nome da tabela no banco de dados
 }
