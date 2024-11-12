@@ -46,15 +46,19 @@ export class UserService {
         return cliente;
     }
 
-    // Buscar todos os clientes
     async findAll() {
-        return this.prisma.adminUser.findMany();
+        return this.prisma.adminUser.findMany({
+            include: {
+                permissions: true, // Inclui a tabela de permissões relacionadas
+            },
+        });
     }
 
-    // Buscar usuário por ID
+   // Buscar usuário por ID e incluir permissões
     async findById(id: string) {
         const cliente = await this.prisma.adminUser.findUnique({
             where: { id },
+            include: { permissions: true }, // Inclui as permissões relacionadas
         });
 
         if (!cliente) {
@@ -64,32 +68,33 @@ export class UserService {
         return cliente;
     }
 
+    // Buscar usuário por e-mail e incluir permissões
     async findByEmail(email: string) {
         const user = await this.prisma.adminUser.findFirst({
-            where: {
-              email: email,  
-            },
+            where: { email },
+            include: { permissions: true }, // Inclui as permissões relacionadas
         });
 
-        return user
+        return user;
     }
 
-      
-    async update(
-        id: string, 
-        updateUser: Partial<AdminUserDto>, 
-    ) {
-        console.log('Verificando se o usuario existe...');
+    // Atualizar usuário e permissões relacionadas
+    async update(id: string, updateUser: Partial<AdminUserDto>) {
+        console.log('Verificando se o usuário existe...');
 
-        const cliente = await this.prisma.adminUser.findUnique({ where: { id } });
+        const cliente = await this.prisma.adminUser.findUnique({
+            where: { id },
+            include: { permissions: true }, // Inclui as permissões atuais para verificação
+        });
 
         console.log(`Buscando cliente com ID: ${id}`);
         console.log('Cliente encontrado:', cliente);
-        
+
         if (!cliente) {
-            throw new NotFoundException(`Cliente with ID ${id} not found`);
+            throw new NotFoundException(`Client with ID ${id} not found`);
         }
-    
+
+        // Atualiza a senha se for fornecida e diferente da existente
         if (updateUser.senha && updateUser.senha !== cliente.senha) {
             updateUser.senha = bcryptHashSync(updateUser.senha, 10);
         }
@@ -102,23 +107,24 @@ export class UserService {
                 genero: updateUser.genero,
                 email: updateUser.email,
                 senha: updateUser.senha,
-                createdAt: new Date(),
                 cidade: updateUser.cidade,
                 estado: updateUser.estado,
+                Status: updateUser.Status,
                 permissions: {
-                    create: updateUser.permissions?.map((permission) => ({
-                      nome: permission.nome,
-                      descricao: permission.descricao,
-                    })),
+                    deleteMany: {}, // Remove permissões existentes
+                    create: updateUser.permissions?.map(permission => ({
+                        nome: permission.nome,
+                        descricao: permission.descricao,
+                    })), // Adiciona permissões atualizadas
                 },
             },
-             
+            include: { permissions: true }, // Inclui permissões no retorno
         });
-          
+
         console.log('Usuário atualizado com sucesso:', updatedUser);
-        
+
         return {
-            updatedUser
+            updatedUser,
         };
     }
 
