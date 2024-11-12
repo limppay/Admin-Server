@@ -12,8 +12,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
   imports: [
     UserModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'ahasdasd', // Altere para sua secret
-      signOptions: { expiresIn: '60m' }, // Token expira em 60 minutos
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60m', algorithm: "HS256" }, // Token expira em 60 minutos
     }),
   ],
   providers: [AuthService, JwtStrategy, UserService, ConfigService, PrismaService],
