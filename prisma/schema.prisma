@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,7 +8,7 @@ datasource db {
 }
 
 model AdminUser {
-  id            String     @id @default(uuid())        
+  id            String       @id @default(uuid())        
   Nome          String
   email         String
   senha         String
@@ -22,18 +16,9 @@ model AdminUser {
   genero        String                                            
   cidade        String                                    
   estado        String                                    
-  Status        Boolean    @default(true)                  
-  createdAt     DateTime   @default(now())                 
-  permissions   Permission[]                               
+  Status        Boolean      @default(true)                  
+  createdAt     DateTime     @default(now())                 
+  permissao     String                                  
 
-  @@map("admin_users")                                     
-}
-
-model Permission {
-  id            Int        @id @default(autoincrement())   // ID autoincrementado para a permissão
-  nome          String                                     // Nome da permissão, ex: "CREATE_USER"
-  descricao   String?                                    // Descrição opcional da permissão
-  adminUsers    AdminUser[]                                // Relação com usuários administrativos
-
-  @@map("permissions")                                     // Nome da tabela no banco de dados
+  @@map("Usuarios")                                     
 }

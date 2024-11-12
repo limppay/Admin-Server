@@ -2,7 +2,6 @@ import { Injectable, BadRequestException, NotFoundException  } from '@nestjs/com
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hashSync as bcryptHashSync } from 'bcrypt';
 import { AdminUserDto } from './user.dto';
-import { PermissionDto } from './permission.dto';
 
 @Injectable()
 export class UserService {
@@ -31,14 +30,7 @@ export class UserService {
                 cidade: newUser.cidade,
                 estado: newUser.estado,
                 createdAt: new Date(),
-
-                permissions: {
-                    create: newUser.permissions?.map((permission) => ({
-                      nome: permission.nome,
-                      descricao: permission.descricao,
-                    })),
-                },
-                                
+                permissao: newUser.permissao
             },
             
         });
@@ -48,9 +40,7 @@ export class UserService {
 
     async findAll() {
         return this.prisma.adminUser.findMany({
-            include: {
-                permissions: true, // Inclui a tabela de permissões relacionadas
-            },
+
         });
     }
 
@@ -58,7 +48,6 @@ export class UserService {
     async findById(id: string) {
         const cliente = await this.prisma.adminUser.findUnique({
             where: { id },
-            include: { permissions: true }, // Inclui as permissões relacionadas
         });
 
         if (!cliente) {
@@ -72,7 +61,6 @@ export class UserService {
     async findByEmail(email: string) {
         const user = await this.prisma.adminUser.findFirst({
             where: { email },
-            include: { permissions: true }, // Inclui as permissões relacionadas
         });
 
         return user;
@@ -84,7 +72,6 @@ export class UserService {
 
         const cliente = await this.prisma.adminUser.findUnique({
             where: { id },
-            include: { permissions: true }, // Inclui as permissões atuais para verificação
         });
 
         console.log(`Buscando cliente com ID: ${id}`);
@@ -110,15 +97,8 @@ export class UserService {
                 cidade: updateUser.cidade,
                 estado: updateUser.estado,
                 Status: updateUser.Status,
-                permissions: {
-                    deleteMany: {}, // Remove permissões existentes
-                    create: updateUser.permissions?.map(permission => ({
-                        nome: permission.nome,
-                        descricao: permission.descricao,
-                    })), // Adiciona permissões atualizadas
-                },
-            },
-            include: { permissions: true }, // Inclui permissões no retorno
+                permissao: updateUser.permissao,
+            }
         });
 
         console.log('Usuário atualizado com sucesso:', updatedUser);

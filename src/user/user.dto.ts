@@ -1,7 +1,6 @@
 // admin-user.dto.ts
 import { IsString, IsBoolean, IsDate, IsUUID, IsOptional, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PermissionDto } from './permission.dto';
 
 export class AdminUserDto {
   @IsUUID()
@@ -37,7 +36,7 @@ export class AdminUserDto {
   @Type(() => Date)
   createdAt: Date;
 
-  @IsArray()
+  @IsString()
   @IsOptional()
-  permissions?: PermissionDto[];
+  permissao?: string;
 }
