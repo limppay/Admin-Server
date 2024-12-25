@@ -11,15 +11,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: (req: Request) => {
-        const userToken = req.cookies['user_token'];
+        const adminToken = req.cookies['admin_token'];
 
-        console.log('Tokens encontrados nos cookies:', { userToken });
+        console.log('Tokens encontrados nos cookies:', { adminToken });
 
-        if (!userToken) {
+        if (!adminToken) {
           throw new UnauthorizedException('Token não encontrado');
         }
 
-        return userToken;
+        return adminToken;
       },
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,

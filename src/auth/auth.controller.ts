@@ -23,7 +23,7 @@ export class AuthController {
     console.log('Token gerado:', token);
 
 
-    res.cookie('user_token', token, {
+    res.cookie('admin_token', token, {
       httpOnly: true, // Não acessível via JavaScript
       secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
       sameSite: 'none', // Permite envio entre domínios diferentes
