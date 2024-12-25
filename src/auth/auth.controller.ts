@@ -26,7 +26,7 @@ export class AuthController {
     res.cookie('user_token', token, {
       httpOnly: true, // Não acessível via JavaScript
       secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
-      sameSite: 'strict', // Prevenir envio cross-site
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : "none", // Prevenir envio cross-site
     });
 
     return res.send({ message: 'Login realizado com sucesso' });
