@@ -1,13 +1,23 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserService } from './user.service';
 import { AdminUserDto } from './user.dto';
+import { Request } from 'express';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService: UserService
     ) {}
+
+    @UseGuards(JwtAuthGuard)
+    @Get('me')
+    async getUserData(@Req() req: Request) {
+        const user = req.user; // Adicionado pelo JwtAuthGuard
+        
+        return user; // Retorna as informações do usuário
+    }
 
     @Post()
     async create(
