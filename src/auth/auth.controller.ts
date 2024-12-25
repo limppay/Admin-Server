@@ -26,7 +26,9 @@ export class AuthController {
     res.cookie('user_token', token, {
       httpOnly: true, // Não acessível via JavaScript
       secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
-      sameSite: "strict", // Prevenir envio cross-site
+      sameSite: 'none', // Permite envio entre domínios diferentes
+      domain: 'up.railway.app', // Configurar domínio compartilhado
+    
     });
 
     return res.send({ message: 'Login realizado com sucesso' });
