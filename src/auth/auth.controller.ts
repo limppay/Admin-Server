@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UnauthorizedException, BadRequestException, Get, Query, Res } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, BadRequestException, Get, Query, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express'; // Importando Response do Express
 import { JwtService } from '@nestjs/jwt';
@@ -14,7 +14,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() body: { email: string; senha: string }, @Res() res: Response, req: Request) {
+  async login(@Body() body: { email: string; senha: string }, @Res() res: Response, @Req() req: Request) {
     const user = await this.authService.validateUser(body.email, body.senha);
 
     if (!user) {
