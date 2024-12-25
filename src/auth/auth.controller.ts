@@ -25,10 +25,17 @@ export class AuthController {
     console.log('Token gerado:', token);
 
     // Verifica se já existe um token de user
-    if (req.cookies['user_token'] || req.cookies['cliente_token'] ) {
-      // Se existir, remove o token user
+    // Verifica se já existe um token de user
+    if (req.cookies['user_token']) {
       res.clearCookie('user_token');
+    }
+
+    if (req.cookies['cliente_token']) {
       res.clearCookie('cliente_token');
+    }
+    
+    if (req.cookies['admin_token']) {
+      res.clearCookie('admin_token');
     }
 
     res.cookie('admin_token', token, {
