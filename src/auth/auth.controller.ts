@@ -2,6 +2,8 @@ import { Controller, Post, Body, UnauthorizedException, BadRequestException, Get
 import { AuthService } from './auth.service';
 import { Response } from 'express'; // Importando Response do Express
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +14,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() body: { email: string; senha: string }, @Res() res: Response) {
+  async login(@Body() body: { email: string; senha: string }, @Res() res: Response, req: Request) {
     const user = await this.authService.validateUser(body.email, body.senha);
 
     if (!user) {
@@ -22,6 +24,12 @@ export class AuthController {
     const token = await this.authService.login(user);
     console.log('Token gerado:', token);
 
+    // Verifica se já existe um token de user
+    if (req.cookies['user_token'] || req.cookies['cliente_token'] ) {
+      // Se existir, remove o token user
+      res.clearCookie('user_token');
+      res.clearCookie('cliente_token');
+    }
 
     res.cookie('admin_token', token, {
       httpOnly: true, // Não acessível via JavaScript
