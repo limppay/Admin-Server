@@ -24,18 +24,29 @@ export class AuthController {
     const token = await this.authService.login(user);
     console.log('Token gerado:', token);
 
-    // Verifica se já existe um token de user
-    // Verifica se já existe um token de user
+    // Verifica se já existe algun token 
     if (req.cookies['user_token']) {
-      res.clearCookie('user_token');
+      res.clearCookie('user_token', {
+        domain: "up.railway.app",
+        sameSite: 'none',
+        path: '/'
+      });
     }
 
     if (req.cookies['cliente_token']) {
-      res.clearCookie('cliente_token');
+      res.clearCookie('cliente_token', {
+        domain: "up.railway.app",
+        sameSite: 'none',
+        path: '/'
+      });
     }
-    
+
     if (req.cookies['admin_token']) {
-      res.clearCookie('admin_token');
+      res.clearCookie('cliente_token', {
+        domain: "up.railway.app",
+        sameSite: 'none',
+        path: '/'
+      });
     }
 
     res.cookie('admin_token', token, {
