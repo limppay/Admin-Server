@@ -25,8 +25,11 @@ export class AuthController {
     console.log('Token gerado:', token);
 
     // Verifica se já existe algun token 
+    // Verifica se já existe algun token 
     if (req.cookies['user_token']) {
       res.clearCookie('user_token', {
+        httpOnly: true, // Não acessível via JavaScript
+        secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
         domain: "up.railway.app",
         sameSite: 'none',
         path: '/'
@@ -35,6 +38,8 @@ export class AuthController {
 
     if (req.cookies['cliente_token']) {
       res.clearCookie('cliente_token', {
+        httpOnly: true, // Não acessível via JavaScript
+        secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
         domain: "up.railway.app",
         sameSite: 'none',
         path: '/'
@@ -43,6 +48,8 @@ export class AuthController {
 
     if (req.cookies['admin_token']) {
       res.clearCookie('cliente_token', {
+        httpOnly: true, // Não acessível via JavaScript
+        secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
         domain: "up.railway.app",
         sameSite: 'none',
         path: '/'
