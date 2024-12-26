@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserService } from './user.service';
 import { AdminUserDto } from './user.dto';
@@ -18,6 +18,15 @@ export class UserController {
         
         return user; // Retorna as informações do usuário
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('logout')
+    async logout(@Req() req, @Res() res: Response) {
+        // Remove o cookie 'user_token' (token de diarista)
+        res.clearCookie('admin_token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        return res.send({ message: 'Logout do admin realizado com sucesso.' });
+    }
+
 
     @Post()
     async create(
