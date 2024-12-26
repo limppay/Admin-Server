@@ -23,7 +23,12 @@ export class UserController {
     @Get('logout')
     async logout(@Req() req, @Res() res: Response) {
         // Remove o cookie 'user_token' (token de diarista)
-        res.clearCookie('admin_token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        res.clearCookie('admin_token', 
+        {   httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none',
+            domain: '.up.railway.app' 
+        });
         return res.send({ message: 'Logout do admin realizado com sucesso.' });
     }
 
