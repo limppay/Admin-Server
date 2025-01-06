@@ -19,7 +19,6 @@ export class UserController {
         return user; // Retorna as informações do usuário
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('logout')
     async logout(@Req() req, @Res() res: Response) {
         // Remove o cookie 'user_token' (token de diarista)
