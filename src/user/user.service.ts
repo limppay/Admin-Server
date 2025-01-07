@@ -68,45 +68,50 @@ export class UserService {
 
     // Atualizar usuário e permissões relacionadas
     async update(id: string, updateUser: Partial<AdminUserDto>) {
-        console.log('Verificando se o usuário existe...');
-
+        console.log('Iniciando atualização do usuário...');
+        console.log(`ID fornecido: ${id}`);
+        console.log('Dados recebidos para atualização:', updateUser);
+    
         const cliente = await this.prisma.adminUser.findUnique({
             where: { id },
         });
-
-        console.log(`Buscando cliente com ID: ${id}`);
-        console.log('Cliente encontrado:', cliente);
-
+    
         if (!cliente) {
+            console.error(`Usuário com ID ${id} não encontrado.`);
             throw new NotFoundException(`Client with ID ${id} not found`);
         }
-
+    
         // Atualiza a senha se for fornecida e diferente da existente
         if (updateUser.senha && updateUser.senha !== cliente.senha) {
+            console.log('Atualizando senha...');
             updateUser.senha = bcryptHashSync(updateUser.senha, 10);
         }
-
-        const updatedUser = await this.prisma.adminUser.update({
-            where: { id },
-            data: {
-                Nome: updateUser.nome,
-                Nascimento: updateUser.nascimento,
-                genero: updateUser.genero,
-                email: updateUser.email,
-                senha: updateUser.senha,
-                cidade: updateUser.cidade,
-                estado: updateUser.estado,
-                Status: updateUser.Status,
-                permissao: updateUser.permissao,
-            }
-        });
-
-        console.log('Usuário atualizado com sucesso:', updatedUser);
-
-        return {
-            updatedUser,
-        };
+    
+        try {
+            const updatedUser = await this.prisma.adminUser.update({
+                where: { id },
+                data: {
+                    Nome: updateUser.nome ?? cliente.Nome,
+                    Nascimento: updateUser.nascimento ?? cliente.Nascimento,
+                    genero: updateUser.genero ?? cliente.genero,
+                    email: updateUser.email ?? cliente.email,
+                    senha: updateUser.senha ?? cliente.senha,
+                    cidade: updateUser.cidade ?? cliente.cidade,
+                    estado: updateUser.estado ?? cliente.estado,
+                    Status: updateUser.Status ?? cliente.Status,
+                    permissao: updateUser.permissao ?? cliente.permissao,
+                },
+            });
+    
+            console.log('Usuário atualizado com sucesso:', updatedUser);
+    
+            return updatedUser;
+        } catch (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            throw new Error('Erro ao atualizar usuário');
+        }
     }
+    
 
     // Deletar um usuário
     async delete(id: string) {
