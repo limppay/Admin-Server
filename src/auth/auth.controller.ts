@@ -24,14 +24,17 @@ export class AuthController {
     const token = await this.authService.login(user);
     console.log('Token gerado:', token);
 
-    // Verifica se já existe algun token 
+    // Configurações baseadas no ambiente
+    const domain = process.env.DOMAIN || 'localhost';
+    const sameSite = process.env.SAME_SITE_POLICY || 'lax';
+
     // Verifica se já existe algun token 
     if (req.cookies['user_token']) {
       res.clearCookie('user_token', {
         httpOnly: true, // Não acessível via JavaScript
         secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
-        domain: "up.railway.app",
-        sameSite: 'none',
+        domain,
+        sameSite: sameSite as 'lax' | 'strict' | 'none',
         path: '/'
       });
     }
@@ -40,8 +43,8 @@ export class AuthController {
       res.clearCookie('cliente_token', {
         httpOnly: true, // Não acessível via JavaScript
         secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
-        domain: "up.railway.app",
-        sameSite: 'none',
+        domain,
+        sameSite: sameSite as 'lax' | 'strict' | 'none',
         path: '/'
       });
     }
@@ -50,8 +53,8 @@ export class AuthController {
       res.clearCookie('cliente_token', {
         httpOnly: true, // Não acessível via JavaScript
         secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
-        domain: "up.railway.app",
-        sameSite: 'none',
+        domain,
+        sameSite: sameSite as 'lax' | 'strict' | 'none',
         path: '/'
       });
     }
@@ -59,8 +62,8 @@ export class AuthController {
     res.cookie('admin_token', token, {
       httpOnly: true, // Não acessível via JavaScript
       secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
-      sameSite: 'none', // Permite envio entre domínios diferentes
-      domain: 'up.railway.app', // Configurar domínio compartilhado
+      sameSite: sameSite as 'lax' | 'strict' | 'none',
+      domain
     
     });
 
