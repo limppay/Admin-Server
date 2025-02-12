@@ -9,7 +9,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 
 @Module({
-  imports: [AuthModule, UserModule,   ConfigModule.forRoot({ isGlobal: true }) ],
+  imports: [
+    AuthModule, 
+    UserModule,   
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env',
+    }) ],
   controllers: [AppController, AuthController],
   providers: [AppService, JwtService],
 })

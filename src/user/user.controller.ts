@@ -21,12 +21,14 @@ export class UserController {
 
     @Get('logout')
     async logout(@Req() req, @Res() res: Response) {
-        // Remove o cookie 'user_token' (token de diarista)
+        const domain = process.env.DOMAIN || 'localhost';
+        const sameSite = process.env.SAME_SITE_POLICY || 'lax';
+
         res.clearCookie('admin_token', 
         {   httpOnly: true, 
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
-            domain: '.up.railway.app' 
+            sameSite: sameSite as 'lax' | 'strict' | 'none',
+            domain 
         });
         return res.send({ message: 'Logout do admin realizado com sucesso.' });
     }
