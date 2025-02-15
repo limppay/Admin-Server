@@ -63,8 +63,8 @@ export class AuthController {
       httpOnly: true, // Não acessível via JavaScript
       secure: process.env.NODE_ENV === 'production', // Somente HTTPS em produção
       sameSite: sameSite as 'lax' | 'strict' | 'none',
-      domain
-    
+      domain,
+      maxAge: 60 * 60 * 24 * 1000, // Agora está em milissegundos (1 dia)
     });
 
     return res.send({ message: 'Login realizado com sucesso' });
