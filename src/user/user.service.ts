@@ -125,5 +125,21 @@ export class UserService {
         return cliente;
     }
 
+    async updatePassword(userId: string, newPassword: string) {
+        console.log("Dados recebidos: ", userId, newPassword)
+        const hashedPassword = bcryptHashSync(newPassword, 10);
+
+        try {
+            return await this.prisma.adminUser.update({
+                where: { id: userId },
+                data: { senha: hashedPassword },
+            });
+            
+        } catch (error) {
+            throw new NotFoundException('Usuário não encontrado');
+
+        }
+    }
+
 
 }

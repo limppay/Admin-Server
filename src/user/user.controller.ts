@@ -67,6 +67,16 @@ export class UserController {
         return this.userService.update(id, user);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Put('new-password/change')
+    async updatePassword(
+        @Body('id') id: string,
+        @Body('newPassword') newPassword: string,
+    ) {
+        return this.userService.updatePassword(id, newPassword);
+    }
+    
+
     // Deletar um usuário
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
